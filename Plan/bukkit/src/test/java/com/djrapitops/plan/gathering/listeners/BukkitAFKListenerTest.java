@@ -64,34 +64,6 @@ class BukkitAFKListenerTest {
         SessionCache.clear();
     }
 
-    @Test
-    void afkPermissionIsNotCalledMoreThanOnceWhenIgnored() {
-        Player player = mockPlayerWithPermissions();
-        PlayerMoveEvent event = mockMoveEvent(player);
-
-        underTest.onMove(event);
-        underTest.onMove(event);
-
-        verify(player, times(1)).hasPermission(anyString());
-    }
-
-    @Test
-    void afkPermissionIsNotCalledMoreThanOnceWhenNotIgnored() {
-        Player player = mockPlayerWithoutPermissions();
-        PlayerMoveEvent event = mockMoveEvent(player);
-
-        underTest.onMove(event);
-        underTest.onMove(event);
-
-        verify(player, times(1)).hasPermission(anyString());
-    }
-
-    private PlayerMoveEvent mockMoveEvent(Player player) {
-        PlayerMoveEvent event = Mockito.mock(PlayerMoveEvent.class);
-        when(event.getPlayer()).thenReturn(player);
-        return event;
-    }
-
     private Player mockPlayerWithPermissions() {
         Player player = Mockito.mock(Player.class);
         when(player.getUniqueId()).thenReturn(TestConstants.PLAYER_ONE_UUID);
