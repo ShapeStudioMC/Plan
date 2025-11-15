@@ -86,7 +86,15 @@ public class BukkitAFKListener implements Listener {
             errorLogger.error(e, ErrorContext.builder().related(event).build());
         }
     }
-
+    
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onPlayerInteract(PlayerInteractEvent event) {
+        Action action = event.getAction();
+        if (action == Action.LEFT_CLICK_BLOCK || action == Action.RIGHT_CLICK_BLOCK) {
+            event((PlayerEvent) event);
+        }
+    }
+    
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         event(event);
