@@ -28,22 +28,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-interface ActivityListener {
-    /**
-     * Called when a player's activity state changes.
-     * @param playerUUID the player's UUID
-     * @param becameInactive true if player just became inactive, false if became active again
-     */
-    void onActivityStateChanged(UUID playerUUID, boolean becameInactive);
-}
-
 /**
  * Keeps track how long player has been afk during a session
  *
  * @author AuroraLS3
  */
 public class AFKTracker {
-
     public static final long IGNORES_AFK = -1L;
 
     private final Set<UUID> usedAFKCommand;
@@ -144,5 +134,14 @@ public class AFKTracker {
             return false;
         }
         return time - lastMoved.get() > getAfkThreshold();
+    }
+    
+    public interface ActivityListener {
+        /**
+         * Called when a player's activity state changes.
+         * @param playerUUID the player's UUID
+         * @param becameInactive true if player just became inactive, false if became active again
+         */
+        void onActivityStateChanged(UUID playerUUID, boolean becameInactive);
     }
 }
