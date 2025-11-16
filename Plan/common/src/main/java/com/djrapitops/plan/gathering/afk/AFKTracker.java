@@ -40,6 +40,7 @@ public class AFKTracker {
     private final PlanConfig config;
     private Long afkThresholdMs;
     private final List<ActivityListener> activityListeners = new ArrayList<>();
+    private final Map<UUID, Boolean> isAfkMap = new ConcurrentHashMap<>();
     
     public AFKTracker(PlanConfig config) {
         this.config = config;
