@@ -41,26 +41,11 @@ public class AFKTracker {
     private final Set<UUID> usedAFKCommand;
     private final PlanConfig config;
     private Long afkThresholdMs;
-    private final List<ActivityListener> activityListeners = new ArrayList<>();
     private final Map<UUID, Boolean> isAfkMap = new ConcurrentHashMap<>();
     
     public AFKTracker(PlanConfig config) {
         this.config = config;
         usedAFKCommand = new HashSet<>();
-    }
-
-    public void addActivityListener(ActivityListener listener) {
-        activityListeners.add(listener);
-    }
-    
-    private void notifyActivityStateChanged(UUID playerUUID, boolean becameInactive) {
-        for (ActivityListener listener : activityListeners) {
-            try {
-                listener.onActivityStateChanged(playerUUID, becameInactive);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public long getAfkThreshold() {
@@ -104,16 +89,7 @@ public class AFKTracker {
         if (lastMoved == IGNORES_AFK) {
             return 0L;
         }
-        boolean wasInactive = isAfkMap.getOrDefault(playerUUID, false);
         storeLastMovement(playerUUID, time);
-    
-        boolean isInactive = (time - lastMoved) > getAfkThreshold();
-        
-        if (wasInactive != isInactive) {
-            notifyActivityStateChanged(playerUUID, isInactive);
-        }
-    
-        isAfkMap.put(playerUUID, isInactive);
         
         try {
             if (time - lastMoved < getAfkThreshold()) {
@@ -146,14 +122,5 @@ public class AFKTracker {
             return false;
         }
         return time - lastMoved.get() > getAfkThreshold();
-    }
-    
-    public interface ActivityListener {
-        /**
-         * Called when a player's activity state changes.
-         * @param playerUUID the player's UUID
-         * @param becameInactive true if player just became inactive, false if became active again
-         */
-        void onActivityStateChanged(UUID playerUUID, boolean becameInactive);
     }
 }
