@@ -101,8 +101,17 @@ public class AFKTracker {
         if (lastMoved == IGNORES_AFK) {
             return 0L;
         }
+        boolean wasInactive = isAfkMap.getOrDefault(playerUUID, false);
         storeLastMovement(playerUUID, time);
-
+    
+        boolean isInactive = (time - lastMoved) > getAfkThreshold();
+        
+        if (wasInactive != isInactive) {
+            notifyActivityStateChanged(playerUUID, isInactive);
+        }
+    
+        isAfkMap.put(playerUUID, isInactive);
+        
         try {
             if (time - lastMoved < getAfkThreshold()) {
                 // Threshold not crossed, no action required.
