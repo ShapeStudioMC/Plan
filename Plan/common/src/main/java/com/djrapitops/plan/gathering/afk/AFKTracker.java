@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public interface ActivityListener {
+interface ActivityListener {
     /**
      * Called when a player's activity state changes.
      * @param playerUUID the player's UUID
