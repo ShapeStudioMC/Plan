@@ -61,9 +61,9 @@ public class BukkitAFKListener implements Listener {
             if (player == null) return;
     
             if (becameInactive) {
-                player.sendMessage(ChatColor.YELLOW + "Your activity time has paused due to inactivity.");
+                player.sendMessage("Your activity time has paused due to inactivity.");
             } else {
-                player.sendMessage(ChatColor.GREEN + "Your activity time has resumed.");
+                player.sendMessage("Your activity time has resumed.");
             }
         });
     }
