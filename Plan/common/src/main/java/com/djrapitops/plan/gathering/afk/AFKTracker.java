@@ -24,7 +24,18 @@ import com.djrapitops.plan.settings.config.paths.TimeSettings;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+
+public interface ActivityListener {
+    /**
+     * Called when a player's activity state changes.
+     * @param playerUUID the player's UUID
+     * @param becameInactive true if player just became inactive, false if became active again
+     */
+    void onActivityStateChanged(UUID playerUUID, boolean becameInactive);
+}
 
 /**
  * Keeps track how long player has been afk during a session
@@ -38,10 +49,25 @@ public class AFKTracker {
     private final Set<UUID> usedAFKCommand;
     private final PlanConfig config;
     private Long afkThresholdMs;
-
+    private final List<ActivityListener> activityListeners = new ArrayList<>();
+    
     public AFKTracker(PlanConfig config) {
         this.config = config;
         usedAFKCommand = new HashSet<>();
+    }
+
+    public void addActivityListener(ActivityListener listener) {
+        activityListeners.add(listener);
+    }
+    
+    private void notifyActivityStateChanged(UUID playerUUID, boolean becameInactive) {
+        for (ActivityListener listener : activityListeners) {
+            try {
+                listener.onActivityStateChanged(playerUUID, becameInactive);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public long getAfkThreshold() {
