@@ -56,6 +56,16 @@ public class BukkitAFKListener implements Listener {
         this.ignorePermissionInfo = new ConcurrentHashMap<>();
 
         BukkitAFKListener.assignAFKTracker(config);
+        afkTracker.addActivityListener((uuid, becameInactive) -> {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player == null) return;
+    
+            if (becameInactive) {
+                player.sendMessage(ChatColor.YELLOW + "Your activity time has paused due to inactivity.");
+            } else {
+                player.sendMessage(ChatColor.GREEN + "Your activity time has resumed.");
+            }
+        });
     }
 
     private static void assignAFKTracker(PlanConfig config) {
